@@ -14,7 +14,7 @@ function activate(context) {
     
     try {
       // The registry automatically figures out which formatter to apply
-      const result = FormatterRegistry.format(lines, cursorLineIndex);
+      const result = FormatterRegistry.format(lines, cursorLineIndex, editor.options);
 
       if (!result) {
         vscode.window.showInformationMessage('Nothing to format or cursor is not inside a supported block.');

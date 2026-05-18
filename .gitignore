@@ -1,6 +1,6 @@
 .vscode
 *.c
-flake.*
+flake.lock
 *.MD
 !README.MD
 tests.md

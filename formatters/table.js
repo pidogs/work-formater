@@ -2,6 +2,12 @@
 
 const BaseFormatter = require('./base');
 
+function getBaseIndent(options) {
+  const insertSpaces = options && typeof options.insertSpaces !== 'undefined' ? options.insertSpaces : true;
+  const tabSize = options && options.tabSize ? Number(options.tabSize) : 4;
+  return insertSpaces ? ' '.repeat(Math.max(1, tabSize)) : '\t';
+}
+
 /**
  * Split "{field1, field2, "str,val", field4}" content by top-level commas.
  */
@@ -162,7 +168,7 @@ class TableFormatter extends BaseFormatter {
   /**
    * Format the isolated chunk of lines independently.
    */
-  formatBlock(blockLines) {
+  formatBlock(blockLines, options) {
     // 1. Parse raw lines into logical elements
     const logicalElements = this.parseLogicalElements(blockLines);
     
@@ -174,8 +180,8 @@ class TableFormatter extends BaseFormatter {
     const numCols = dataRows.length > 0 ? Math.max(...dataRows.map(r => r.fields.length)) : 0;
     const { colWidths, startOffsets } = this.calculateColumnWidths(dataRows, numCols);
     
-    // 4. Construct the formatted output
-    return this.formatLogicalElements(logicalElements, numCols, colWidths, startOffsets);
+    // 4. Construct the formatted output (use editor options for indentation)
+    return this.formatLogicalElements(logicalElements, numCols, colWidths, startOffsets, options);
   }
 
   /**
@@ -338,9 +344,9 @@ class TableFormatter extends BaseFormatter {
   /**
    * Format logical elements into aligned output lines.
    */
-  formatLogicalElements(logicalElements, numCols, colWidths, startOffsets) {
+  formatLogicalElements(logicalElements, numCols, colWidths, startOffsets, options) {
     const formattedLines = [];
-    const baseIndent = '    ';
+    const baseIndent = getBaseIndent(options);
 
     logicalElements.forEach(e => {
       if (e.type === 'header') {

@@ -20,7 +20,7 @@ class FormatterRegistry {
    * @param {number} cursorLineIndex - Current line of the cursor
    * @returns {string[]|null} - The updated document lines, or null if nothing changed
    */
-  format(lines, cursorLineIndex) {
+  format(lines, cursorLineIndex, options) {
     if (cursorLineIndex < 0 || cursorLineIndex >= lines.length) return null;
     if (lines[cursorLineIndex].trim() === '') return null;
 
@@ -31,8 +31,8 @@ class FormatterRegistry {
         const { start, end } = boundaries;
         const blockLines = lines.slice(start, end + 1);
         
-        // Let the specific formatter do its job
-        const formattedBlock = formatter.formatBlock(blockLines);
+        // Let the specific formatter do its job. Pass through editor options.
+        const formattedBlock = formatter.formatBlock(blockLines, options);
 
         // Splice the newly formatted block back into the full lines array
         const resultLines = [...lines];

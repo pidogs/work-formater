@@ -2,3 +2,5 @@
 *.c
 flake.*
 *.MD
+.gitignore
+*.example
