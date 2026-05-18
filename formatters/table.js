@@ -191,10 +191,41 @@ class TableFormatter extends BaseFormatter {
     const logicalElements = [];
     let buffer = "";
 
+    // Normalize lines: split any occurrence of a declaration keyword that
+    // appears immediately after a semicolon on the same line (e.g.
+    // `}; struct Foo ...` or `int a; struct Foo ...`). This ensures the
+    // semicolon-terminated token stays on its own line and the following
+    // `struct|enum|union|typedef` declaration is parsed separately.
+    const normalized = [];
     for (let i = 0; i < blockLines.length; i++) {
-      let line = blockLines[i].trim();
+      // Split on a semicolon that is followed by one of the declaration
+      // keywords. We will re-add the semicolon to the left-hand parts.
+      const parts = blockLines[i].split(/;\s*(?=(?:struct|enum|union|typedef)\b)/);
+      if (parts.length > 1) {
+        for (let p = 0; p < parts.length; p++) {
+          if (p < parts.length - 1) {
+            normalized.push((parts[p] || '') + ';');
+          } else {
+            if (parts[p].trim()) normalized.push(parts[p]);
+          }
+        }
+      } else {
+        normalized.push(blockLines[i]);
+      }
+    }
+
+    for (let i = 0; i < normalized.length; i++) {
+      let line = normalized[i].trim();
       if (line === '') continue;
-      
+
+      // If the current buffer ends with a semicolon and the next line begins
+      // with a declaration keyword, flush the buffer so the declaration is
+      // parsed independently. This handles cases like `int a; struct Foo ...`.
+      if (buffer.length > 0 && buffer.trim().endsWith(';') && line.match(/^(?:struct|enum|union|typedef)\b/)) {
+        logicalElements.push({ type: 'raw', raw: buffer });
+        buffer = '';
+      }
+
       // Handle single-line comments (//) as standalone elements - don't concatenate
       if (line.startsWith('//') || line.startsWith('#')) {
         // Process any buffered content first
