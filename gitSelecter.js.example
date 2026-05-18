@@ -1,0 +1,85 @@
+import * as vscode from 'vscode';
+import { exec } from 'child_process';
+import * as path from 'path';
+
+export function activate(context: vscode.ExtensionContext) {
+  let disposable = vscode.commands.registerCommand(
+    'extension.formatDiffOnly',
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) return;
+
+      const filePath = editor.document.fileName;
+      const fileExtension = path.extname(filePath).toLowerCase();
+
+      // 1. Get the Diff Ranges from VS Code's internal git state
+      // This command returns an array of modified line ranges
+      const changes: any[] = await vscode.commands.executeCommand(
+        'git.getChanges',
+        editor.document.uri
+      );
+
+      if (!changes || changes.length === 0) {
+        vscode.window.showInformationMessage('No git changes detected.');
+        return;
+      }
+
+      // 2. Determine which formatter to use
+      const formatterScript = getFormatterScript(filePath, fileExtension);
+
+      if (!formatterScript) {
+        vscode.window.showWarningMessage(
+          `No formatter configured for ${fileExtension}`
+        );
+        return;
+      }
+
+      // 3. Iterate through each change and run your script
+      // Each 'change' usually contains the line numbers that were modified
+      for (const change of changes) {
+        // You can pass the path and line numbers to your external script
+        const startLine = change.line;
+        const endLine = change.endLine || startLine;
+
+        runExternalFormatter(formatterScript, filePath, startLine, endLine);
+      }
+    }
+  );
+
+  context.subscriptions.push(disposable);
+}
+
+function getFormatterScript(filePath: string, extension: string): string | null {
+  // Logic based on file path and extension
+  switch (extension) {
+    case '.c':
+      return 'cformatter.js';
+    case '.xml':
+      return 'xmlFormatter.js';
+    default:
+      // You can add more complex path-based logic here
+      if (filePath.includes('/legacy-system/')) {
+        return 'legacyFormatter.js';
+      }
+      return null;
+  }
+}
+
+function runExternalFormatter(
+  script: string,
+  targetFile: string,
+  start: number,
+  end: number
+) {
+  // Executes: node cformatter.js /path/to/file.c 10 15
+  const command = `node ${script} "${targetFile}" ${start} ${end}`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Formatter Error: ${error.message}`);
+      return;
+    }
+    // Optionally refresh the editor after formatting
+    vscode.commands.executeCommand('workbench.action.files.revert');
+  });
+}

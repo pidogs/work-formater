@@ -1,0 +1,6 @@
+.vscode
+*.c
+flake.*
+*.MD
+!README.MD
+tests.md
