@@ -171,17 +171,34 @@ class TableFormatter extends BaseFormatter {
   formatBlock(blockLines, options) {
     // 1. Parse raw lines into logical elements
     const logicalElements = this.parseLogicalElements(blockLines);
+    console.log('logicalElements');
+    console.log(logicalElements);
     
     // 2. Extract fields from rows and comments
     this.parseElementFields(logicalElements);
+    console.log('logicalElements (after parseElementFields)');
+    console.log(logicalElements);
     
     // 3. Calculate column widths and offsets
     const dataRows = logicalElements.filter(e => e.type === 'row');
+    console.log('dataRows');
+    console.log(dataRows);
+    
     const numCols = dataRows.length > 0 ? Math.max(...dataRows.map(r => r.fields.length)) : 0;
+    console.log('numCols');
+    console.log(numCols);
+    
     const { colWidths, startOffsets } = this.calculateColumnWidths(dataRows, numCols);
+    console.log('colWidths');
+    console.log(colWidths);
+    console.log('startOffsets');
+    console.log(startOffsets);
     
     // 4. Construct the formatted output (use editor options for indentation)
-    return this.formatLogicalElements(logicalElements, numCols, colWidths, startOffsets, options);
+    const result = this.formatLogicalElements(logicalElements, numCols, colWidths, startOffsets, options);
+    console.log('result');
+    console.log(result);
+    return result;
   }
 
   /**

@@ -26,8 +26,8 @@
     "keybindings": [
       {
         "command": "cTableFormatter.format",
-        "key": "ctrl+alt+t",
-        "mac": "cmd+alt+t",
+        "key": "ctrl+alt+w",
+        "mac": "cmd+alt+w",
         "when": "editorTextFocus"
       }
     ]

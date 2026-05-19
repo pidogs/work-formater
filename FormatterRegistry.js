@@ -1,6 +1,6 @@
 'use strict';
 
-const TableFormatter = require('./formatters/table');
+const TableFormatter = require('./formatters/table2');
 // Example for the future: const SwitchFormatter = require('./formatters/SwitchFormatter');
 
 class FormatterRegistry {
