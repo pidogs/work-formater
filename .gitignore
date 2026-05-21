@@ -1,0 +1,56 @@
+# Recommended .gitignore for this workspace
+
+### Node / JavaScript
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp-debug.log
+
+### Logs
+logs/
+*.log
+
+### Build / Output
+dist/
+build/
+out/
+lib/
+*.tsbuildinfo
+
+### TypeScript
+*.tsbuildinfo
+
+### VS Code - ignore user-specific VSCode files but keep launch/tasks/etc needed for F5
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+!.vscode/settings.json
+
+### Environment
+.env
+.env.local
+.env.*.local
+
+### Coverage
+coverage/
+.nyc_output/
+
+### OS files
+.DS_Store
+Thumbs.db
+
+### Editors
+*.swp
+*~
+.idea/
+*.iml
+
+### Compiled outputs / source maps (if your build emits them)
+**/out/**/*.js
+**/out/**/*.js.map
+
+### Misc
+.cache/
+/*.log

@@ -1,0 +1,48 @@
+{
+  "name": "c-table-formatter",
+  "displayName": "C Table and If Formatter",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "activationEvents": [
+    "onLanguage:c",
+    "onLanguage:cpp"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cCustomFormatter.formatAtCursor",
+        "title": "Format at Cursor (C Custom Formatter)",
+        "category": "C Custom Formatter"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "cCustomFormatter.formatAtCursor",
+        "key": "ctrl+alt+w",
+        "when": "editorTextFocus && (editorLangId == 'c' || editorLangId == 'cpp')"
+      }
+    ]
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.9.1",
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1",
+    "@types/node": "^20.4.2",
+    "@types/vscode": "^1.80.0"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -w -p .",
+    "dev": "ts-node ./src/server.ts",
+    "package": "vsce package",
+    "prepublish": "npm run build"
+  }
+}
