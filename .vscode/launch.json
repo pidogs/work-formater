@@ -6,6 +6,15 @@
       "type": "extensionHost",
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"]
+    },
+    {
+      "name": "Run Extension (Debug Parser)",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--debug-table-parser"],
+      "env": {
+        "DEBUG_TABLE_PARSER": "true"
+      }
     }
   ]
 }
